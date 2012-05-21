@@ -15,41 +15,15 @@ if ($pos != false) {
       case 'PUT':
         $url = encodeUrl($_GET['url']);
 
-        $data = @file_get_contents('php://input');
-        if (strpos($url, 'image-server/v1') != 0 && strpos($data, 'xlink:href')) {
-            $start = strpos($data, 'xlink:href="') + 12;
-            $end = strpos($data, '"', $start);
-            $imageUrl = substr($data, $start, $end-$start);
-
-            $session = curl_init($imageUrl);
-            curl_setopt($session, CURLOPT_HEADER, false);
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-            $response = curl_exec($session);
-            curl_close($session);
-
-            /*$filename = tempnam(sys_get_temp_dir(), 'upload');
-            $fh = fopen($filename, "w+");
-            fwrite($fh, $response);
-            fflush($fh);
-            fclose($fh);
-            $fh = fopen($filename, "r");*/
-
-            $session = curl_init(secureUrl('PUT', $url)."&method=PUT");
+    	$data = @file_get_contents('php://input');
+        if (strpos($url, 'image-server/v1') != 0 && strpos($data, 'xlink:href')) {           
+            $session = curl_init(secureUrl('PUT', $url));         
             curl_setopt($session, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-            curl_setopt($session, CURLOPT_POST, true);
-            curl_setopt($session, CURLOPT_POSTFIELDS, $response);
-            curl_setopt($session, CURLOPT_HTTPHEADER, getRelevantRequestHeaders());
+            curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'PUT');            
+            curl_setopt($session, CURLOPT_POSTFIELDS, $data);            
+            curl_setopt($session, CURLOPT_HTTPHEADER, array("Content-Type: text/xml"));
             curl_setopt($session, CURLOPT_HEADER, true);
             curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-            /*curl_setopt($session, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-            curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'PUT');            
-            curl_setopt($session, CURLOPT_POSTFIELDS, $response);
-            //curl_setopt($session, CURLOPT_PUT, true);
-            //curl_setopt($session, CURLOPT_INFILE, $fh);
-            //curl_setopt($session, CURLOPT_INFILESIZE, filesize($filename));
-            curl_setopt($session, CURLOPT_HTTPHEADER, getRelevantRequestHeaders());
-            curl_setopt($session, CURLOPT_HEADER, true);
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);*/
 
             // Make the call
             $response = curl_exec($session);
@@ -59,12 +33,9 @@ if ($pos != false) {
 
             echo secureUrl('PUT', $url)."&method=PUT";
             echo curl_error($session);
-            //fclose($fh);
             curl_close($session);
             echo $response;
-
-        } /*else {
-        }    */
+        }
         break;
       case 'POST': 
         $url = encodeUrl($_GET['url']);
