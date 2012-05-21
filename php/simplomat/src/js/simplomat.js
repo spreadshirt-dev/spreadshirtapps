@@ -454,7 +454,7 @@ function Simplomat() {
      */
     this.getDesignUploadXML = function(url) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-               "<ref xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://api.spreadshirt.net\" xlink:href=\"" + url + "\">";
+               "<reference xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://api.spreadshirt.net\" xlink:href=\"" + url + "\"/>";
     };
 }
 
